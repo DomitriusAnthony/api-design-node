@@ -21,6 +21,59 @@ app.use(bodyParser.json());
 var lions = [];
 var id = 0;
 
+// Practice RESTful CRUD API routing with Express
+
+
+// Get All of the lions 
+app.get('/lions', (req, res) => {
+    res.json(lions);
+});
+
+// Getting a specific lion from an :id
+app.get('/lions/:id', (req, res) => {
+    var lion = _.find(lions, {id: req.params.id});
+    res.json(lion || undefined);
+})
+
+// Create a Lion 
+app.post('/lions', (req, res) => {
+    var lion = req.body;
+    id++;
+    lion.id = id + '';
+
+    lions.push(lion);
+
+    res.json(lion);
+})
+
+// Update a Lion
+app.put('/lions/:id', (req, res) => {
+    var update = req.body;
+    if (update.id) {
+        delete update.id
+    }
+
+    var lion = _.findIndex(lions, {id: req.params.id});
+    if (!lions[lion]) {
+        res.send()
+    } else {
+        var updatedLion = _.assign(lions[lion], update);
+        res.json(updatedLion);
+    }
+});
+
+// Delete a lion
+app.delete('/lions/:id', (req, res) => {
+    var lion = _.findIndex(lions, {id: req.params.id});
+    if (!lions[lion]) {
+        res.send()
+    } else {
+        var deletedLion = lions[lion]
+        lions.splice(lion, 1);
+        res.json(deletedLion);
+    }
+})
+
 // TODO: make the REST routes to perform CRUD on lions
 
 app.listen(3000);
